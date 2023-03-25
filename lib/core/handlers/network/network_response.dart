@@ -15,9 +15,7 @@ class NetworkResponse {
 
   bool get isSuccess => responseType == ResponseType.success;
 
-  dynamic get data => _response.data != null && _response.data is Map
-      ? _response.data['terms']
-      : null;
+  dynamic get data => _response.data;
 
   int? get statusCode => _response.statusCode;
 
