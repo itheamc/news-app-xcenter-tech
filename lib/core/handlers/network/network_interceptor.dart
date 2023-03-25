@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
+import '../../../utils/log_utils.dart';
 import 'network_response.dart';
 
 ///--------------------------------@mit------------------------------
@@ -8,6 +9,11 @@ import 'network_response.dart';
 class NetworkInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+    LogUtil.debug(
+      message: options.uri.toString(),
+      functionName: 'onRequest',
+      className: runtimeType.toString(),
+    );
     super.onRequest(options, handler);
   }
 
@@ -29,9 +35,12 @@ class NetworkInterceptor extends Interceptor {
         ),
       );
     } else {
-      if (kDebugMode) {
-        print("[_____ERROR___onResponse]------>${response.data}");
-      }
+      LogUtil.debug(
+        message: response.data,
+        functionName: 'onResponse',
+        className: runtimeType.toString(),
+      );
+
       return handler.next(
         FailureResponse(
           data: response.data,
@@ -49,9 +58,12 @@ class NetworkInterceptor extends Interceptor {
 
   @override
   void onError(DioError err, ErrorInterceptorHandler handler) {
-    if (kDebugMode) {
-      print("[___ERROR___onError] -------> ${err.message}}");
-    }
+    LogUtil.debug(
+      message: err.message ?? err.type.name,
+      functionName: 'onError',
+      className: runtimeType.toString(),
+    );
+
     switch (err.type) {
       case DioErrorType.connectionTimeout:
         return handler.resolve(
