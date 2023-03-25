@@ -8,7 +8,7 @@ class LogUtil {
   }) {
     if (kDebugMode) {
       print(
-          "[${className != null ? '$className: ' : ''}${functionName != null ? '$functionName: ' : ''}] ---> $message");
+          "[${className != null ? '$className: ' : ''}${functionName ?? ''}] ---> $message");
     }
   }
 }
