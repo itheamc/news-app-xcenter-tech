@@ -11,10 +11,18 @@ class NewsController extends GetxController {
   /// News Repository
   late NewsRepository _newsRepository;
 
-  /// List of Banners
+  /// List of News
   final _listOfNews = List<News>.empty(growable: true).obs;
 
-  List<News> get listOfBanners => _listOfNews;
+  List<News> get listOfNews => _listOfNews;
+
+  /// Network request progress observer
+  final _fetchingNews = false.obs;
+  final _fetchingTopHeadlines = false.obs;
+
+  bool get fetchingNews => _fetchingNews.value;
+
+  bool get fetchingTopHeadlines => _fetchingTopHeadlines.value;
 
   @override
   void onInit() {
@@ -27,13 +35,27 @@ class NewsController extends GetxController {
   void onReady() {
     super.onReady();
 
-    fetchNews();
+    fetchNews(
+      params: News.queryParams(
+        query: 'bitcoin',
+        pageSize: 10,
+      ),
+    );
   }
 
   /// Method to fetch the news from the api
   Future<void> fetchNews({Map<String, dynamic>? params}) async {
+    if (fetchingNews) return;
+
     try {
-      final responseEntity = await _newsRepository.fetchNews(params: params);
+      _fetchingNews.value = true;
+
+      final response = await _newsRepository.fetchNews(params: params);
+
+      if (response.isSuccess && response.data != null) {
+        _listOfNews.clear();
+        _listOfNews.addAll(response.data!.news);
+      }
     } catch (e) {
       LogUtil.debug(
         message: e.toString(),
@@ -41,5 +63,7 @@ class NewsController extends GetxController {
         className: runtimeType.toString(),
       );
     }
+
+    _fetchingNews.value = false;
   }
 }

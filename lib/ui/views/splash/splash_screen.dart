@@ -30,7 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
           .storeToken("62dd8b7808664b94ab5ad1e718069ded")
           .then((value) {
         // Navigate top news page
-        context.go(Routes.news);
+        context.go(Routes.sources);
 
         // if (context.canPop()) {
         //   context.pop();

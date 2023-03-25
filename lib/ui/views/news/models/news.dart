@@ -1,6 +1,5 @@
-import 'package:news_app_xcenter_tech/ui/views/news/models/news_source.dart';
-
 import '../../../../utils/log_utils.dart';
+import '../../sources/models/news_source.dart';
 
 class News {
   final String? id;

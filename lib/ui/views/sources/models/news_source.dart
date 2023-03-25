@@ -1,4 +1,4 @@
-import '../../../../utils/log_utils.dart';
+import 'package:news_app_xcenter_tech/utils/log_utils.dart';
 
 class NewsSource {
   final String? id;
@@ -36,10 +36,14 @@ class NewsSource {
 
 /// Method to parse the news sources json data
 Future<List<NewsSource>?> parseNewsSourcesJsonData(dynamic data) async {
-  if (data == null || data is! List) return null;
+  if (data == null) return null;
+
+  final sources = data['sources'];
+
+  if (sources == null || sources is! List) return null;
 
   final temp = List<NewsSource>.empty(growable: true);
-  for (final json in data) {
+  for (final json in sources) {
     try {
       temp.add(NewsSource.fromJson(json));
     } catch (e) {

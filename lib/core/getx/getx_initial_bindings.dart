@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:news_app_xcenter_tech/ui/views/news/controller/news_controller.dart';
 
+import '../../ui/views/sources/controller/news_sources_controller.dart';
 import '../handlers/session/session_handler.dart';
 
 class GetxInitialBindings extends Bindings {
@@ -16,6 +17,15 @@ class GetxInitialBindings extends Bindings {
     );
 
     /// Putting NewsController to the getx
-    Get.lazyPut<NewsController>(() => NewsController(), fenix: true);
+    Get.lazyPut<NewsController>(
+      () => NewsController(),
+      fenix: true,
+    );
+
+    /// Putting NewsSourcesController to the getx
+    Get.lazyPut<NewsSourcesController>(
+      () => NewsSourcesController(),
+      fenix: true,
+    );
   }
 }

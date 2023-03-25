@@ -1,31 +1,26 @@
 import 'package:flutter/foundation.dart';
 import 'package:news_app_xcenter_tech/core/api/endpoints.dart';
 import 'package:news_app_xcenter_tech/core/handlers/network/request_handler.dart';
-import 'package:news_app_xcenter_tech/ui/views/news/models/news_response_entity.dart';
-import 'package:news_app_xcenter_tech/ui/views/news/repository/news_repository.dart';
 
 import '../../../../core/handlers/network/parshed_response.dart';
 import '../../../../utils/log_utils.dart';
+import '../models/news_source.dart';
+import 'news_sources_repository.dart';
 
-class NewsRepositoryImpl extends NewsRepository {
-  /// Function to fetch the news from the api
+class NewsSourcesRepositoryImpl extends NewsSourcesRepository {
+  /// Method to fetch the list of news sources
   @override
-  Future<ParsedResponse<NewsResponseEntity?>> fetchNews({
-    Map<String, dynamic>? params,
-    bool onlyTopHeadlines = false,
-  }) async {
+  Future<ParsedResponse<List<NewsSource>?>> fetchNewsSources(
+      {Map<String, dynamic>? params}) async {
     try {
-      final endpoint =
-          onlyTopHeadlines ? EndPoints.topHeadlines : EndPoints.news;
-
       final response = await RequestHandler.get(
-        endpoint,
+        EndPoints.sources,
         queryParameters: params,
       );
 
       if (response.isSuccess) {
-        final data = await compute<dynamic, NewsResponseEntity?>(
-          parseNewsResponseJsonData,
+        final data = await compute<dynamic, List<NewsSource>?>(
+          parseNewsSourcesJsonData,
           response.data,
         );
 
@@ -43,7 +38,7 @@ class NewsRepositoryImpl extends NewsRepository {
     } catch (e) {
       LogUtil.debug(
         message: e.toString(),
-        functionName: 'fetchNews',
+        functionName: 'fetchNewsSources',
         className: runtimeType.toString(),
       );
 
