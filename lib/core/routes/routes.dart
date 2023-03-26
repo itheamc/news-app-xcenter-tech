@@ -1,5 +1,7 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:go_router/go_router.dart';
+import 'package:news_app_xcenter_tech/ui/views/news/models/news.dart';
+import 'package:news_app_xcenter_tech/ui/views/news/news_details_screen.dart';
 import 'package:news_app_xcenter_tech/ui/views/sources/news_sources_screen.dart';
 
 import '../../ui/views/error/error_screen.dart';
@@ -8,7 +10,7 @@ import '../../ui/views/splash/splash_screen.dart';
 
 class Routes {
   static const splash = "/";
-  static const news = "/news";
+  static const news = "/news/:source";
   static const newsDetail = "$news/:newsId";
   static const sources = "/sources";
 
@@ -22,11 +24,15 @@ class Routes {
       ),
       GoRoute(
         path: news,
-        builder: (context, state) => const NewsScreen(),
+        builder: (context, state) => NewsScreen(
+          source: state.params['source'],
+        ),
       ),
       GoRoute(
         path: newsDetail,
-        builder: (context, state) => const NewsScreen(),
+        builder: (context, state) => NewsDetailsScreen(
+          news: state.extra is News ? state.extra as News : null,
+        ),
       ),
       GoRoute(
         path: sources,
