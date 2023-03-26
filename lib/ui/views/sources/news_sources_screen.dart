@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:news_app_xcenter_tech/ui/shared/loading_indicator.dart';
 import 'package:news_app_xcenter_tech/ui/shared/responsive_ui.dart';
 import 'package:news_app_xcenter_tech/ui/views/sources/controller/news_sources_controller.dart';
@@ -26,7 +27,6 @@ class _NewsSourcesScreenState extends State<NewsSourcesScreen>
         centerTitle: true,
       ),
       body: Obx(() {
-
         if (controller.fetchingNewsSources) {
           return const LoadingIndicator(
             size: 36.0,
@@ -35,8 +35,25 @@ class _NewsSourcesScreenState extends State<NewsSourcesScreen>
           );
         }
 
-        return const Center(
-          child: Text("Loaded"),
+        return ListView.builder(
+          itemCount: controller.listOfNewsSources.length,
+          itemBuilder: (BuildContext context, int index) {
+            final source = controller.listOfNewsSources[index];
+            return InkWell(
+              onTap: () {
+                context.go('/news/${source.id}');
+              },
+              child: Ink(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  source.name ?? "",
+                  style: context.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            );
+          },
         );
       }),
     );

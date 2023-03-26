@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:news_app_xcenter_tech/ui/shared/responsive_ui.dart';
 import 'package:news_app_xcenter_tech/ui/views/news/controller/news_controller.dart';
+import 'package:news_app_xcenter_tech/ui/views/news/models/news.dart';
+
+import '../../shared/loading_indicator.dart';
 
 class NewsScreen extends StatefulWidget {
-  const NewsScreen({Key? key}) : super(key: key);
+  final String? source;
+
+  const NewsScreen({Key? key, this.source}) : super(key: key);
 
   @override
   State<NewsScreen> createState() => _NewsScreenState();
@@ -11,6 +18,25 @@ class NewsScreen extends StatefulWidget {
 
 class _NewsScreenState extends State<NewsScreen>
     with ResponsiveUiMixin<NewsController> {
+  String get source => widget.source ?? 'bbc-news';
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _loadNews();
+    });
+  }
+
+  Future<void> _loadNews() async {
+    controller.fetchNews(
+      params: News.queryParams(
+        sources: source,
+        pageSize: 50,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return buildUi(context);
@@ -23,9 +49,36 @@ class _NewsScreenState extends State<NewsScreen>
         title: Text(controller.title),
         centerTitle: true,
       ),
-      body: Center(
-        child: Text("I am Phone"),
-      ),
+      body: Obx(() {
+        if (controller.fetchingNews) {
+          return const LoadingIndicator(
+            size: 36.0,
+            lineWidth: 3.0,
+            label: "Loading News...",
+          );
+        }
+
+        return ListView.builder(
+          itemCount: controller.listOfNews.length,
+          itemBuilder: (BuildContext context, int index) {
+            final news = controller.listOfNews[index];
+            return InkWell(
+              onTap: () {
+                context.go('/news/$source/${news.id}', extra: news);
+              },
+              child: Ink(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  news.title ?? "",
+                  style: context.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      }),
     );
   }
 
