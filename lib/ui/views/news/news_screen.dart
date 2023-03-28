@@ -5,6 +5,7 @@ import 'package:news_app_xcenter_tech/ui/shared/responsive_ui.dart';
 import 'package:news_app_xcenter_tech/ui/views/news/controller/news_controller.dart';
 import 'package:news_app_xcenter_tech/ui/views/news/models/news.dart';
 
+import '../../shared/image_view.dart';
 import '../../shared/loading_indicator.dart';
 
 class NewsScreen extends StatefulWidget {
@@ -62,16 +63,32 @@ class _NewsScreenState extends State<NewsScreen>
           itemCount: controller.listOfNews.length,
           itemBuilder: (BuildContext context, int index) {
             final news = controller.listOfNews[index];
-            return InkWell(
-              onTap: () {
-                context.go('/news/$source/${news.id}', extra: news);
-              },
-              child: Ink(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  news.title ?? "",
-                  style: context.textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
+            return Padding(
+              padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+              child: InkWell(
+                onTap: () {
+                  context.go('/news/$source/${news.id}', extra: news);
+                },
+                borderRadius: BorderRadius.circular(16.0),
+                child: Ink(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16.0),
+                  ),
+                  child: Column(
+                    children: [
+                      AspectRatio(
+                        aspectRatio: 18 / 9,
+                        child: NetworkImageView(
+                          url: news.coverUrl ?? "",
+                          fit: BoxFit.cover,
+                          borderRadius: BorderRadius.circular(16.0),
+                        ),
+                      ),
+                      Text(
+                        news.title ?? "",
+                        style: context.textTheme.titleMedium,
+                      ),
+                    ],
                   ),
                 ),
               ),

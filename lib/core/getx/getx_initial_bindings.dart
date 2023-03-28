@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:news_app_xcenter_tech/core/controllers/connectivity_controller.dart';
 import 'package:news_app_xcenter_tech/ui/views/news/controller/news_controller.dart';
 
 import '../../ui/views/sources/controller/news_sources_controller.dart';
@@ -15,6 +16,9 @@ class GetxInitialBindings extends Bindings {
       },
       permanent: true,
     );
+
+    /// Putting Connectivity Controller
+    Get.put<ConnectivityController>(ConnectivityController());
 
     /// Putting NewsController to the getx
     Get.lazyPut<NewsController>(

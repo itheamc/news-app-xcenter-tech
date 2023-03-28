@@ -35,7 +35,7 @@ class News {
       source:
           json['source'] != null ? NewsSource.fromJson(json['source']) : null,
       url: json['url'],
-      coverUrl: json['coverUrl'],
+      coverUrl: json['urlToImage'],
       publishedAt: json['publishedAt'] != null
           ? DateTime.tryParse(json['publishedAt'])
           : null,
