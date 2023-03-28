@@ -13,9 +13,9 @@ class LoadingIndicator extends StatelessWidget {
   const LoadingIndicator({
     Key? key,
     this.label,
-    this.size = 50.0,
+    this.size = 36.0,
     this.lineCount = 1,
-    this.lineWidth = 4.0,
+    this.lineWidth = 3.0,
     this.color,
     this.duration,
   }) : super(key: key);
@@ -32,7 +32,7 @@ class LoadingIndicator extends StatelessWidget {
                   height: 8.0,
                 ),
                 Text(
-                  "${label?.tr}",
+                  label!,
                   style: context.textTheme.bodySmall,
                 )
               ],
