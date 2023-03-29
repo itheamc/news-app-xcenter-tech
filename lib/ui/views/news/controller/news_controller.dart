@@ -16,6 +16,11 @@ class NewsController extends GetxController {
 
   List<News> get listOfNews => _listOfNews;
 
+  /// Error
+  final _error = "".obs;
+
+  String? get error => _error.value.isEmpty ? null : _error.value;
+
   /// Network request progress observer
   final _fetchingNews = false.obs;
   final _fetchingTopHeadlines = false.obs;
@@ -49,12 +54,15 @@ class NewsController extends GetxController {
 
     try {
       _fetchingNews.value = true;
+      _error.value = "";
 
       final response = await _newsRepository.fetchNews(params: params);
 
       if (response.isSuccess && response.data != null) {
         _listOfNews.clear();
         _listOfNews.addAll(response.data!.news);
+      } else {
+        _error.value = response.message ?? "";
       }
     } catch (e) {
       LogUtil.debug(
