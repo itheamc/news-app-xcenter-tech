@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 /// Extension function on theme data
 extension ThemeDataExt on ThemeData {
@@ -16,7 +17,6 @@ extension ThemeDataExt on ThemeData {
   bool get linuxPlatform => platform == TargetPlatform.linux;
 }
 
-
 /// Extension FUnction On List
 extension ListSortExt on List {
   /// Function to sort the data
@@ -31,5 +31,12 @@ extension ListSortExt on List {
           ? Comparable.compare(aValue, bValue)
           : Comparable.compare(bValue, aValue);
     });
+  }
+}
+
+/// String Extension Functions
+extension StrExtension on String {
+  String get capitalizeFirstOfEach {
+    return split(" ").map((e) => e.capitalize).join(" ");
   }
 }
