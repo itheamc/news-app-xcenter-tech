@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 
 import '../../../utils/log_utils.dart';
 import 'network_response.dart';
@@ -59,7 +58,7 @@ class NetworkInterceptor extends Interceptor {
   @override
   void onError(DioError err, ErrorInterceptorHandler handler) {
     LogUtil.debug(
-      message: err.message ?? err.type.name,
+      message: err.type.name,
       functionName: 'onError',
       className: runtimeType.toString(),
     );
@@ -84,9 +83,6 @@ class NetworkInterceptor extends Interceptor {
               statusMessage: "Send timeout with server"),
         );
       case DioErrorType.badResponse:
-        if (kDebugMode) {
-          print(err.response?.data);
-        }
         return handler.resolve(
           FailureResponse(
             data: err.response?.data,
@@ -94,7 +90,7 @@ class NetworkInterceptor extends Interceptor {
             headers: err.response?.headers,
             isRedirect: err.response?.isRedirect ?? false,
             statusCode: err.response?.statusCode,
-            statusMessage: "Request Failed",
+            statusMessage: err.message ?? "Request Failed",
             redirects: err.response?.redirects ?? [],
             extra: err.response?.extra ?? {},
           ),
