@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "440740568150",
+    "project_id": "xcenter-news-app",
+    "storage_bucket": "xcenter-news-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:440740568150:android:53389daa17c24ac7c62ff7",
+        "android_client_info": {
+          "package_name": "com.itheamc.news_app_xcenter_tech"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "440740568150-vtimvhqdsklegoibnmud5be8nkrvoci6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.itheamc.news_app_xcenter_tech",
+            "certificate_hash": "a7a7eec835431da5804a26a3fecc9ee0d0a5aa67"
+          }
+        },
+        {
+          "client_id": "440740568150-q4ojubu6nphooud9p4mos4ajuj5arff9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPh303mwNzTlltJ3SELYvy0hINlXEwdD0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "440740568150-q4ojubu6nphooud9p4mos4ajuj5arff9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

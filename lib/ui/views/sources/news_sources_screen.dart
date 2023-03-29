@@ -1,12 +1,17 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:news_app_xcenter_tech/core/controllers/connectivity_controller.dart';
+import 'package:news_app_xcenter_tech/core/handlers/session/session_handler.dart';
 import 'package:news_app_xcenter_tech/ui/shared/loading_indicator.dart';
 import 'package:news_app_xcenter_tech/ui/shared/no_data_or_error_container.dart';
 import 'package:news_app_xcenter_tech/ui/shared/no_internet.dart';
 import 'package:news_app_xcenter_tech/ui/shared/responsive_ui.dart';
 import 'package:news_app_xcenter_tech/ui/views/sources/controller/news_sources_controller.dart';
+
+import '../../../core/notification/fcm_notification_handler.dart';
+import '../../../utils/log_utils.dart';
 
 class NewsSourcesScreen extends StatefulWidget {
   const NewsSourcesScreen({Key? key}) : super(key: key);
@@ -20,9 +25,24 @@ class _NewsSourcesScreenState extends State<NewsSourcesScreen>
   /// Connectivity Controller
   final _connectivityController = Get.find<ConnectivityController>();
 
+  /// Session Handler
+  final _sessionHandler = Get.find<SessionHandler>();
+
   @override
   void initState() {
     super.initState();
+
+    // Requesting Notification Permission
+    // For android devices running on android 13 or more
+    FCMNotificationHandler.requestPermission().then((value) {
+      // Initialize Firebase Notification
+      FCMNotificationHandler.initialize(
+        onTokenRefreshed: _onTokenRefreshListener,
+        onMessageOpenedApp: _handleOnMessageOpenedApp,
+        onMessage: _onNotificationReceive,
+      );
+    });
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _loadNewsSources();
     });
@@ -36,6 +56,33 @@ class _NewsSourcesScreenState extends State<NewsSourcesScreen>
       }
     }
   }
+
+  ///------------------------------FOR NOTIFICATION------------------------
+  /// OnTokenRefresh Listener
+  Future<void> _onTokenRefreshListener(String token) async {
+    // Checking user login status
+    final isLoggedIn = _sessionHandler.loggedIn;
+
+    if (!isLoggedIn) return;
+
+    // Checking internet connection status
+    if (_connectivityController.hasInternet) {
+      // Save the initial token to the database
+      LogUtil.debug(
+        message: token,
+        functionName: '_onTokenRefreshListener',
+        className: runtimeType.toString(),
+      );
+    }
+  }
+
+  /// Method to handle message
+  Future<void> _handleOnMessageOpenedApp(RemoteMessage message) async {
+    /// Handle routing as per the notification data
+  }
+
+  /// Store notification to the database
+  Future<void> _onNotificationReceive(RemoteMessage message) async {}
 
   @override
   Widget build(BuildContext context) {
