@@ -7,8 +7,10 @@ import 'package:news_app_xcenter_tech/ui/views/news/controller/news_controller.d
 import 'package:news_app_xcenter_tech/ui/views/news/models/news.dart';
 import 'package:news_app_xcenter_tech/utils/extension_functions.dart';
 
+import '../../../core/controllers/connectivity_controller.dart';
 import '../../shared/image_view.dart';
 import '../../shared/loading_indicator.dart';
+import '../../shared/no_internet.dart';
 
 class NewsScreen extends StatefulWidget {
   final String? source;
@@ -28,6 +30,9 @@ class _NewsScreenState extends State<NewsScreen>
   String? get title =>
       widget.source?.replaceAll("-", " ").capitalizeFirstOfEach;
 
+  /// Connectivity Controller
+  final _connectivityController = Get.find<ConnectivityController>();
+
   @override
   void initState() {
     super.initState();
@@ -38,12 +43,14 @@ class _NewsScreenState extends State<NewsScreen>
 
   /// Method to load news as per the given source
   Future<void> _loadNews() async {
-    controller.fetchNews(
-      params: News.queryParams(
-        sources: source,
-        pageSize: 50,
-      ),
-    );
+    if (_connectivityController.hasInternet) {
+      controller.fetchNews(
+        params: News.queryParams(
+          sources: source,
+          pageSize: 50,
+        ),
+      );
+    }
   }
 
   @override
@@ -58,8 +65,37 @@ class _NewsScreenState extends State<NewsScreen>
         title: Text(title ?? controller.title),
         centerTitle: true,
       ),
-      body: _ui4Body(
-        newsItems: ListView.builder(
+      body: Obx(() {
+        if (controller.fetchingNews) {
+          return const LoadingIndicator(
+            size: 36.0,
+            lineWidth: 3.0,
+            label: "Loading News...",
+          );
+        }
+
+        if (controller.error != null) {
+          return NoDataOrErrorContainer(
+            message: controller.error,
+          );
+        }
+
+        if (controller.listOfNews.isEmpty &&
+            !_connectivityController.hasInternet) {
+          return NoInternet(
+            onReload: _loadNews,
+          );
+        }
+
+        if (controller.listOfNews.isEmpty &&
+            _connectivityController.hasInternet) {
+          return NoDataOrErrorContainer(
+            message: "No News Found!!",
+            onReload: _loadNews,
+          );
+        }
+
+        return ListView.builder(
           itemCount: controller.listOfNews.length,
           itemBuilder: (BuildContext context, int index) {
             final news = controller.listOfNews[index];
@@ -68,35 +104,8 @@ class _NewsScreenState extends State<NewsScreen>
               child: _ui4NewsItem(news),
             );
           },
-        ),
-      ),
-    );
-  }
-
-  @override
-  Widget? ui4Desktop({Key? key}) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title ?? controller.title),
-        centerTitle: true,
-      ),
-      body: _ui4Body(
-        newsItems: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: GridView.builder(
-            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 480.0,
-                mainAxisSpacing: 20.0,
-                crossAxisSpacing: 20.0,
-                childAspectRatio: 18 / 12),
-            itemBuilder: (BuildContext context, int index) {
-              final news = controller.listOfNews[index];
-              return _ui4NewsItem(news);
-            },
-            itemCount: controller.listOfNews.length,
-          ),
-        ),
-      ),
+        );
+      }),
     );
   }
 
@@ -107,8 +116,37 @@ class _NewsScreenState extends State<NewsScreen>
         title: Text(title ?? controller.title),
         centerTitle: true,
       ),
-      body: _ui4Body(
-        newsItems: Padding(
+      body: Obx(() {
+        if (controller.fetchingNews) {
+          return const LoadingIndicator(
+            size: 36.0,
+            lineWidth: 3.0,
+            label: "Loading News...",
+          );
+        }
+
+        if (controller.error != null) {
+          return NoDataOrErrorContainer(
+            message: controller.error,
+          );
+        }
+
+        if (controller.listOfNews.isEmpty &&
+            !_connectivityController.hasInternet) {
+          return NoInternet(
+            onReload: _loadNews,
+          );
+        }
+
+        if (controller.listOfNews.isEmpty &&
+            _connectivityController.hasInternet) {
+          return NoDataOrErrorContainer(
+            message: "No News Found!!",
+            onReload: _loadNews,
+          );
+        }
+
+        return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: GridView.builder(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -123,32 +161,65 @@ class _NewsScreenState extends State<NewsScreen>
             },
             itemCount: controller.listOfNews.length,
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 
-  /// UI for body
-  Widget _ui4Body({
-    required Widget newsItems,
-  }) {
-    return Obx(() {
-      if (controller.fetchingNews) {
-        return const LoadingIndicator(
-          size: 36.0,
-          lineWidth: 3.0,
-          label: "Loading News...",
-        );
-      }
+  @override
+  Widget? ui4Desktop({Key? key}) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title ?? controller.title),
+        centerTitle: true,
+      ),
+      body: Obx(() {
+        if (controller.fetchingNews) {
+          return const LoadingIndicator(
+            size: 36.0,
+            lineWidth: 3.0,
+            label: "Loading News...",
+          );
+        }
 
-      if (controller.error != null) {
-        return NoDataOrErrorContainer(
-          message: controller.error,
-        );
-      }
+        if (controller.error != null) {
+          return NoDataOrErrorContainer(
+            message: controller.error,
+          );
+        }
 
-      return newsItems;
-    });
+        if (controller.listOfNews.isEmpty &&
+            !_connectivityController.hasInternet) {
+          return NoInternet(
+            onReload: _loadNews,
+          );
+        }
+
+        if (controller.listOfNews.isEmpty &&
+            _connectivityController.hasInternet) {
+          return NoDataOrErrorContainer(
+            message: "No News Found!!",
+            onReload: _loadNews,
+          );
+        }
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: GridView.builder(
+            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 480.0,
+                mainAxisSpacing: 20.0,
+                crossAxisSpacing: 20.0,
+                childAspectRatio: 18 / 12),
+            itemBuilder: (BuildContext context, int index) {
+              final news = controller.listOfNews[index];
+              return _ui4NewsItem(news);
+            },
+            itemCount: controller.listOfNews.length,
+          ),
+        );
+      }),
+    );
   }
 
   /// Ui for the news item
