@@ -24,7 +24,6 @@ class NewsRepositoryImpl extends NewsRepository {
       );
 
       if (response.isSuccess) {
-        print(response.data);
         final data = await compute<dynamic, NewsResponseEntity?>(
           parseNewsResponseJsonData,
           response.data,
