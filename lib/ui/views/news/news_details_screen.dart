@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:news_app_xcenter_tech/ui/shared/loading_indicator.dart';
-import 'package:news_app_xcenter_tech/ui/shared/no_data_container.dart';
+import 'package:news_app_xcenter_tech/ui/shared/no_data_or_error_container.dart';
 import 'package:news_app_xcenter_tech/ui/shared/responsive_ui.dart';
 import 'package:news_app_xcenter_tech/ui/views/news/controller/news_controller.dart';
 import 'package:news_app_xcenter_tech/ui/views/news/models/news.dart';
@@ -41,20 +41,20 @@ class _NewsDetailsScreenState extends State<NewsDetailsScreen>
   @override
   void initState() {
     super.initState();
+    _initWebView();
+  }
 
+  /// Method to initialize the WebView
+  void _initWebView() {
     _webViewController = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(const Color(0x00000000))
       ..setNavigationDelegate(
         NavigationDelegate(
-          onProgress: (int progress) {
-
-          },
+          onProgress: (int progress) {},
           onPageStarted: (String url) {},
           onPageFinished: (String url) {
-            setState(() {
-              _loading.value = false;
-            });
+            _loading.value = false;
           },
           onWebResourceError: (WebResourceError error) {
             _loading.value = false;
@@ -76,66 +76,25 @@ class _NewsDetailsScreenState extends State<NewsDetailsScreen>
   @override
   Widget ui4Phone({Key? key}) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text(controller.title),
-      //   centerTitle: true,
-      // ),
-      body: SafeArea(
-        child: Obx(() {
-          if (loading) {
-            return const LoadingIndicator(
-              label: "Wait...",
-              size: 36.0,
-            );
-          }
-
-          if (error != null) {
-            return NoDataContainer(
-              message: error ?? "",
-              onReload: () {
-                _webViewController.reload();
-              },
-            );
-          }
-          return WebViewWidget(controller: _webViewController);
-        }),
-      ),
-    );
-  }
-
-  @override
-  Widget? ui4Desktop({Key? key}) {
-    return Scaffold(
       appBar: AppBar(
-        title: Text(controller.title),
+        title: const Text("News Detail"),
         centerTitle: true,
       ),
-    );
-  }
+      body: Obx(() {
+        if (loading) {
+          return const LoadingIndicator(
+            label: "Wait...",
+            size: 36.0,
+          );
+        }
 
-  @override
-  Widget? ui4Tablet({Key? key}) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(controller.title),
-        centerTitle: true,
-      ),
-    );
-  }
-
-  @override
-  Widget? ui4Watch({Key? key}) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(controller.title),
-        centerTitle: true,
-      ),
-      body: Container(
-        color: Colors.orange,
-        child: const Center(
-          child: Text("I am watch"),
-        ),
-      ),
+        if (error != null) {
+          return NoDataOrErrorContainer(
+            message: error ?? "",
+          );
+        }
+        return WebViewWidget(controller: _webViewController);
+      }),
     );
   }
 }
