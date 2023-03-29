@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class NoDataContainer extends StatelessWidget {
+class NoDataOrErrorContainer extends StatelessWidget {
   final String? message;
   final VoidCallback? onReload;
 
-  const NoDataContainer({
+  const NoDataOrErrorContainer({
     Key? key,
     this.message,
     this.onReload,
@@ -25,15 +25,16 @@ class NoDataContainer extends StatelessWidget {
           const SizedBox(
             height: 8.0,
           ),
-          OutlinedButton(
-            onPressed: onReload,
-            style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 36.0,
+          if (onReload != null)
+            OutlinedButton(
+              onPressed: onReload,
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 36.0,
+                ),
               ),
+              child: const Text("Retry"),
             ),
-            child: const Text("Retry"),
-          ),
         ],
       ),
     );
