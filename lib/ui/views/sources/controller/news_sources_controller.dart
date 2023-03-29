@@ -21,18 +21,15 @@ class NewsSourcesController extends GetxController {
 
   bool get fetchingNewsSources => _fetchingNewsSources.value;
 
+  /// Error
+  final _error = "".obs;
+
+  String? get error => _error.value.isEmpty ? null : _error.value;
+
   @override
   void onInit() {
     super.onInit();
-
     _sourcesRepository = NewsSourcesRepositoryImpl();
-  }
-
-  @override
-  void onReady() {
-    super.onReady();
-
-    fetchNewsSources();
   }
 
   /// Method to fetch the news sources from the api
@@ -41,6 +38,7 @@ class NewsSourcesController extends GetxController {
 
     try {
       _fetchingNewsSources.value = true;
+      _error.value = "";
 
       final response =
           await _sourcesRepository.fetchNewsSources(params: params);
@@ -48,6 +46,8 @@ class NewsSourcesController extends GetxController {
       if (response.isSuccess && response.data != null) {
         _listOfNewsSources.clear();
         _listOfNewsSources.addAll(response.data!);
+      } else {
+        _error.value = response.message ?? "";
       }
     } catch (e) {
       LogUtil.debug(
