@@ -61,7 +61,7 @@ This app has four screens-
     
  3. News Screen
 
-    This screen shows the as per the sources that you have been selected on sources screen. You can see the list of news witha acover image and title here.
+    This screen shows the as per the sources that you have been selected on sources screen. You can see the list of news with a cover image and title here.
     
  4. Details Screen
     
