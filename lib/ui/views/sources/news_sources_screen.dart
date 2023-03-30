@@ -34,13 +34,15 @@ class _NewsSourcesScreenState extends State<NewsSourcesScreen>
 
     // Requesting Notification Permission
     // For android devices running on android 13 or more
-    FCMNotificationHandler.requestPermission().then((value) {
-      // Initialize Firebase Notification
-      FCMNotificationHandler.initialize(
-        onTokenRefreshed: _onTokenRefreshListener,
-        onMessageOpenedApp: _handleOnMessageOpenedApp,
-        onMessage: _onNotificationReceive,
-      );
+    FCMNotificationHandler.requestPermission().then((granted) {
+      if (granted) {
+        // Initialize Firebase Notification
+        FCMNotificationHandler.initialize(
+          onTokenRefreshed: _onTokenRefreshListener,
+          onMessageOpenedApp: _handleOnMessageOpenedApp,
+          onMessage: _onNotificationReceive,
+        );
+      }
     });
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
